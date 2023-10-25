@@ -1,0 +1,12 @@
+
+-- 6.1 List all the scientists' names, their projects' names, 
+    -- and the hours worked by that scientist on each project, 
+    -- in alphabetical order of project name, then scientist name.
+    
+select s.name "scientists_name" ,p.name "projects_name", p.hours"worked_hours" from scientists s join assignedto a on  s.ssn = a.scientist 
+join projects p on a.project = p.code order by p.name, s.name;   
+-- 6.2 Select the project names which are not assigned yet
+
+select projects.name"Project_not_assigned" from projects left join assignedto on  projects.code = assignedto.scientist where assignedto.scientist is null;
+
+

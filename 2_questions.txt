@@ -1,0 +1,70 @@
+use  employee_management;
+
+-- 2.1 Select the last name of all employees.
+
+select lastname from employees;
+-- 2.2 Select the last name of all employees, without duplicates.
+
+select distinct lastname from employees;
+-- 2.3 Select all the data of employees whose last name is "Smith".
+
+select * from employees where lastname = "Smith";
+-- 2.4 Select all the data of employees whose last name is "Smith" or "Doe".
+
+select * from employees where lastname in("Smith","Doe");
+-- 2.5 Select all the data of employees that work in department 14.
+
+select * from employees where department = 14;
+-- 2.6 Select all the data of employees that work in department 37 or department 77.
+
+select * from employees where department in (37,77);
+-- 2.7 Select all the data of employees whose last name begins with an "S".
+
+select * from employees where lastname like "S%";
+-- 2.8 Select the sum of all the departments' budgets.
+
+select * from departments;
+select sum(budget) from departments;
+
+-- 2.9 Select the number of employees in each department (you only need to show the department code and the number of employees).
+
+select departments.code, count(employees.name) "number_of_employees" from employees join departments where employees.department = departments.code group by departments.code;
+-- 2.10 select all the data of employees, including each employee's department's data.
+
+select employees.*, departments.* from employees join departments where employees.department = departments.code;
+-- 2.11 Select the name and last name of each employee, along with the name and budget of the employee's department.
+
+select employees.name, employees.lastname, departments.name,  departments.budget from employees join departments where employees.department = departments.code;
+-- 2.12 Select the name and last name of employees working for departments with a budget greater than $60,000.
+
+select employees.*, departments.* from employees join departments where employees.department = departments.code;
+-- 2.13 Select the departments with a budget larger than the average budget of all the departments.
+
+select name, budget from departments where budget > (select avg(budget) from departments);
+-- 2.14 Select the names of departments with more than two employees.
+
+select departments.name "Names of departments" from departments join employees on employees.department = departments.code group by  departments.name having count(*) >2;
+-- 2.15 Very Important - Select the name and last name of employees working for departments with second lowest budget.
+
+select employees.name, employees.lastname from employees join departments on employees.department = departments.code where  departments.budget = (select distinct budget from departments order by budget asc limit 1 offset 1);
+-- 2.16  Add a new department called "Quality Assurance", with a budget of $40,000 and departmental code 11. 
+-- And Add an employee called "Mary Moore" in that department, with SSN 847-21-9811.
+
+insert into departments(code, name, budget )values(11,"Quality Assurance",40000);
+insert into employees(ssn, name, lastname, department)values('847219811','mary','Moore',(SELECT code FROM departments WHERE name = 'Quality Assurance') );
+-- 2.17 Reduce the budget of all departments by 10%.
+
+update departments set budget = budget*0.10;
+-- 2.18 Reassign all employees from the Research department (code 77) to the IT department (code 14).
+select * from employees;
+select * from departments;
+update employees set department = 14 where department = 77;
+-- 2.19 Delete from the table all employees in the IT department (code 14).
+
+delete from employees where department = 14;
+-- 2.20 Delete from the table all employees who work in departments with a budget greater than or equal to $60,000.
+
+delete from employees where department in (select code from departments where budget >= 60000);
+-- 2.21 Delete from the table all employees.
+
+delete from employees;

@@ -1,0 +1,61 @@
+-- 1
+use pradeepbookingagency;
+select * from hotels;
+-- 2
+select * from hotels where city = 'new york';
+-- 3
+select name,city from guest order by city;
+-- 4
+select * from room where type = 'N' order by price asc;
+-- 5
+select count(name) from hotels;
+-- 6
+select distinct city from guest;
+-- 7
+select avg(price) from room;
+-- 9
+select name, date_from, date_to, room_no from booking join hotels on booking.hotel_no = hotels.hotel_no 
+where hotels.city = 'new york';
+-- 10
+select count(*) from booking where date_format(date_from,'%y-%m-%d') >= '99-09-01';
+-- 11
+SELECT g.name AS guest_name, g.city
+FROM guest g
+INNER JOIN booking b ON g.guest_no = b.guestno
+INNER JOIN hotels h ON b.hotel_no = h.hotel_no
+WHERE h.city = 'New York' AND MONTH(b.date_from) = 8;
+-- 12
+SELECT h.name AS hotel_name, r.room_no
+FROM hotels h
+JOIN room r ON h.hotel_no = r.hotel_no
+WHERE (h.hotel_no, r.room_no) NOT IN (
+    SELECT b.hotel_no, b.room_no
+    FROM booking b
+);
+-- 13
+SELECT h.name AS hotel_name, h.city
+FROM hotels h
+JOIN room r ON h.hotel_no = r.hotel_no
+WHERE r.price = (
+    SELECT MAX(price)
+    FROM room
+);
+-- 14
+SELECT h.name AS hotel_name, r.room_no, h.city, r.price
+FROM hotels h
+JOIN room r ON h.hotel_no = r.hotel_no
+WHERE r.price < (
+    SELECT MIN(price)
+    FROM room
+    WHERE hotel_no IN (
+        SELECT hotel_no
+        FROM hotels
+        WHERE city = 'Boston'
+    )
+);
+
+-- 15
+SELECT h.city, AVG(r.price) AS average_price
+FROM hotels h
+JOIN room r ON h.hotel_no = r.hotel_no
+GROUP BY h.city;
